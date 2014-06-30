@@ -515,7 +515,7 @@ public class Term extends Activity implements UpdateCallback {
         boolean isQPy3 =  NAction.isQPy3(getApplicationContext());
 
         if (isQPy3) {
-        	scmd = "python3";
+        	scmd = "python";
         } else {
         	scmd = "python";
         }
@@ -526,7 +526,7 @@ public class Term extends Activity implements UpdateCallback {
         } else {
         	String content = FileHelper.getFileContents(mArgs[0]);
         	if (content.contains("#qpy:3\n")) {
-        		scmd = "python3";
+        		scmd = "python";
         	} else if (content.contains("#qpy:2\n")) {
         		scmd = "python";
 

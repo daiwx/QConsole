@@ -125,13 +125,13 @@ public class ShellTermSession extends TermSession {
     private void initializeSession(String cmd) {
     	//String code = getCode(context);
         boolean isQPy3 =  NAction.isQPy3(context);
-        if (cmd!=null) {
+        /*if (cmd!=null) {
         	if (cmd.startsWith("python ")) {
         		isQPy3 = false;
-        	} else if (cmd.startsWith("python3 ")) {
+        	} else if (cmd.startsWith("python ")) {
         		isQPy3 = true;
         	}
-        }
+        }*/
         
         Log.d("ShellTermSession", "initializeSession:"+cmd+"-"+isQPy3);
         TermSettings settings = mSettings;
@@ -155,7 +155,7 @@ public class ShellTermSession extends TermSession {
         if (settings.verifyPath()) {
             path = checkPath(path);
         }
-        String[] env = new String[17];
+        String[] env = new String[18];
         env[0] = "TERM=" + settings.getTermType();
         env[1] = "PATH=" + this.context.getFilesDir()+"/bin"+":"+path;
 
@@ -170,24 +170,21 @@ public class ShellTermSession extends TermSession {
         	externalStorage = new File(Environment.getExternalStorageDirectory(), "Tubebook");
 
         }
-        
-
-
         env[2] = "LD_LIBRARY_PATH="+filesDir+"/lib"+":"+filesDir.getParentFile()+"/files:"+filesDir.getParentFile()+"/lib";
 
         env[3] = "PYTHONHOME="+filesDir;
         env[4] = "ANDROID_PRIVATE="+filesDir;
         
         if (isQPy3) {
-
 	        env[5] = "PYTHONPATH="
-    				+filesDir+"/lib/python3.2/lib/:"
-	        		+filesDir+"/lib/python3.2/lib-dynload/:"
-	        		+filesDir+"/lib/python3.2/site-packages/:"
 	        		+externalStorage+"/lib/python3.2/site-packages/:"
+    				+filesDir+"/lib/python3.2/lib/:"
+    				+filesDir+"/lib/python3.2/site-packages/:"
+    				+filesDir+"/lib/python3.2/python32.zip:"
+    				+filesDir+"/lib/python3.2/lib-dynload/:"
 	        		+pyPath;
 	        
-	        env[14] = "PYTHONDONTWRITEBYTECODE=1";
+	        env[14] = "IS_QPY3=1";
 	        
 	        
         } else {
@@ -215,6 +212,7 @@ public class ShellTermSession extends TermSession {
 
         env[15] = "QPY_USERNO="+NAction.getUserNoId(context);
         env[16] = "QPY_ARGUMENT="+NAction.getExtConf(context);
+        env[17] = "PYTHONDONTWRITEBYTECODE=1";
 
         createSubprocess(processId, settings.getShell(), env);
         mProcId = processId[0];
