@@ -275,7 +275,7 @@ public class Term extends Activity implements UpdateCallback {
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-        Log.e(TermDebug.LOG_TAG, "onCreate");
+        //Log.e(TermDebug.LOG_TAG, "onCreate");
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSettings = new TermSettings(getResources(), mPrefs);
 
@@ -704,8 +704,11 @@ public class Term extends Activity implements UpdateCallback {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_new_window), MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
-        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_close_window), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_special_keys), MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_new_window), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        //MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_close_window), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setShowAsAction(menu.findItem(R.id.menu_preferences), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+
         return true;
     }
 
@@ -716,7 +719,7 @@ public class Term extends Activity implements UpdateCallback {
             doPreferences();
         } else if (id == R.id.menu_new_window) {
             doCreateNewWindow();
-        } else if (id == R.id.menu_close_window) {
+        /*} else if (id == R.id.menu_close_window) {
             confirmCloseWindow();
         } else if (id == R.id.menu_window_list) {
             startActivityForResult(new Intent(this, WindowList.class), REQUEST_CHOOSE_WINDOW);
@@ -724,7 +727,7 @@ public class Term extends Activity implements UpdateCallback {
             doResetTerminal();
             Toast toast = Toast.makeText(this,R.string.reset_toast_notification,Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();
+            toast.show();*/
         } else if (id == R.id.menu_send_email) {
             doEmailTranscript();
         } else if (id == R.id.menu_special_keys) {

@@ -16,6 +16,7 @@
 
 package jackpal.androidterm.compat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 /**
@@ -23,11 +24,13 @@ import android.app.Activity;
  */
 public class ActivityCompat {
     private static class Api11OrLater {
-        public static void invalidateOptionsMenu(Activity activity) {
+        @SuppressLint("NewApi")
+		public static void invalidateOptionsMenu(Activity activity) {
             activity.invalidateOptionsMenu();
         }
 
-        public static Object getActionBar(Activity activity) {
+        @SuppressLint("NewApi")
+		public static Object getActionBar(Activity activity) {
             return activity.getActionBar();
         }
     }

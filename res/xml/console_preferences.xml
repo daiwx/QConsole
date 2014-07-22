@@ -140,7 +140,7 @@
     <PreferenceCategory
         android:title="@string/shell_preferences">
 
-    <EditTextPreference
+    <!--EditTextPreference
             android:key="shell"
             android:defaultValue="@string/pref_shell_default"
             android:title="@string/title_shell_preference"
@@ -151,7 +151,7 @@
             android:defaultValue="@string/pref_initialcommand_default"
             android:title="@string/title_initialcommand_preference"
             android:summary="@string/summary_initialcommand_preference"
-            android:dialogTitle="@string/dialog_title_initialcommand_preference" />
+            android:dialogTitle="@string/dialog_title_initialcommand_preference" /-->
     <ListPreference
             android:key="termtype"
             android:defaultValue="@string/pref_termtype_default"
