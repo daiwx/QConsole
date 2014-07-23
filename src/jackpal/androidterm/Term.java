@@ -343,6 +343,7 @@ public class Term extends Activity implements UpdateCallback {
             mActionBar = actionBar;
             actionBar.setNavigationMode(ActionBarCompat.NAVIGATION_MODE_LIST);
             actionBar.setDisplayOptions(0, ActionBarCompat.DISPLAY_SHOW_TITLE);
+            
             if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
                 actionBar.hide();
             }
@@ -738,6 +739,10 @@ public class Term extends Activity implements UpdateCallback {
             doToggleWakeLock();
         } else if (id == R.id.menu_toggle_wifilock) {
             doToggleWifiLock();
+        } else if (id == ActionBarCompat.ID_HOME) {
+        	closeWindow();
+        } else {
+        	Log.d(TAG, "onOptionsItemSelected:");
         }
         // Hide the action bar if appropriate
         if (mActionBarMode == TermSettings.ACTION_BAR_MODE_HIDES) {
@@ -915,6 +920,32 @@ public class Term extends Activity implements UpdateCallback {
           }
         }
 
+    public void closeWindow() {
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle(R.string.close_window).setMessage(R.string.confirm_window_close_message)
+        	.setPositiveButton(R.string.promote_ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+		    		if (AndroidCompat.SDK < 5) {
+		                mBackKeyPressed = true;
+
+		    		} else {
+    	                mStopServiceOnFinish = true;
+
+    					finish();
+		    		}
+					
+				}
+			}).setNegativeButton(R.string.promote_cancel, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+					finish();
+				}
+			});
+            alert.create().show();
+
+    }
     @Override
     public boolean onKeyDown(final int keyCode, KeyEvent event) {
         /* The pre-Eclair default implementation of onKeyDown() would prevent
