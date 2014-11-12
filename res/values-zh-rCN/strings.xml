@@ -7,6 +7,8 @@
    <string name="send_email">发送电子邮件到...</string>
    <string name="special_keys">特殊键</string>
    <string name="toggle_soft_keyboard">打开/关闭软键盘</string>
+   <string name="close_window">后台运行</string>
+  <string name="confirm_window_close_message">在后台运行这个控制台 ?</string>
 
    <string name="edit_text">编辑文本</string>
    <string name="copy_all">全部复制</string>
@@ -55,5 +57,8 @@
    <string name="title_initialcommand_preference">初始命令</string>
    <string name="summary_initialcommand_preference">启动 Shell 时自动执行的命令</string>
    <string name="dialog_title_initialcommand_preference">初始命令</string>
+
+  <string name="promote_ok">好</string>
+  <string name="promote_no">不</string>
 
 </resources>

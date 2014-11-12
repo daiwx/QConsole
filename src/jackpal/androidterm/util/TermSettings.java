@@ -39,7 +39,7 @@ public class TermSettings {
     private int mControlKeyId;
     private int mFnKeyId;
     private int mUseCookedIME;
-    private String mShell;
+    public String mShell;
     private String mFailsafeShell;
     private String mInitialCommand;
     private String mTermType;

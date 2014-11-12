@@ -521,8 +521,9 @@ public class Term extends Activity implements UpdateCallback {
         	scmd = "python";
         }
         if (mArgs==null) {
+        	settings.mShell = getApplicationContext().getFilesDir()+"/bin/python";
+        	scmd = "";
             session = createTermSession(this, settings, scmd, "");
-
 
         } else {
         	String content = FileHelper.getFileContents(mArgs[0]);
@@ -534,7 +535,7 @@ public class Term extends Activity implements UpdateCallback {
         	}
         	//String cmd = settings.getInitialCommand().equals("")?scmd:settings.getInitialCommand();
         	String cmd = scmd;
-            session = createTermSession(this, settings, cmd+" \""+mArgs[0]+"\"", mArgs[1]);
+            session = createTermSession(this, settings, cmd+" "+mArgs[0]+"", mArgs[1]);
             mArgs = null;
 
         }
@@ -728,9 +729,9 @@ public class Term extends Activity implements UpdateCallback {
             doResetTerminal();
             Toast toast = Toast.makeText(this,R.string.reset_toast_notification,Toast.LENGTH_LONG);
             toast.setGravity(Gravity.CENTER, 0, 0);
-            toast.show();*/
+            toast.show();
         } else if (id == R.id.menu_send_email) {
-            doEmailTranscript();
+            doEmailTranscript();*/
         } else if (id == R.id.menu_special_keys) {
             doDocumentKeys();
         } else if (id == R.id.menu_toggle_soft_keyboard) {
@@ -776,13 +777,13 @@ public class Term extends Activity implements UpdateCallback {
                 doCloseWindow();
             }
         };
-        b.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+        b.setPositiveButton(android.R.string.no, new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
                dialog.dismiss();
                mHandler.post(closeWindow);
            }
         });
-        b.setNegativeButton(android.R.string.no, null);
+        b.setNegativeButton(android.R.string.yes, null);
         b.show();
     }
 
@@ -923,7 +924,7 @@ public class Term extends Activity implements UpdateCallback {
     public void closeWindow() {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.close_window).setMessage(R.string.confirm_window_close_message)
-        	.setPositiveButton(R.string.promote_ok, new DialogInterface.OnClickListener() {
+        	.setPositiveButton(R.string.promote_no, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 		    		if (AndroidCompat.SDK < 5) {
@@ -936,7 +937,7 @@ public class Term extends Activity implements UpdateCallback {
 		    		}
 					
 				}
-			}).setNegativeButton(R.string.promote_cancel, new DialogInterface.OnClickListener() {
+			}).setNegativeButton(R.string.promote_ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 
@@ -970,7 +971,7 @@ public class Term extends Activity implements UpdateCallback {
     	} else {*/
     		AlertDialog.Builder alert = new AlertDialog.Builder(this);
             alert.setTitle(R.string.close_window).setMessage(R.string.confirm_window_close_message)
-            	.setPositiveButton(R.string.promote_ok, new DialogInterface.OnClickListener() {
+            	.setPositiveButton(R.string.promote_no, new DialogInterface.OnClickListener() {
     				@Override
     				public void onClick(DialogInterface dialog, int which) {
     		    		if (AndroidCompat.SDK < 5 && keyCode == KeyEvent.KEYCODE_BACK) {
@@ -983,7 +984,7 @@ public class Term extends Activity implements UpdateCallback {
     		    		}
     					
     				}
-    			}).setNegativeButton(R.string.promote_cancel, new DialogInterface.OnClickListener() {
+    			}).setNegativeButton(R.string.promote_ok, new DialogInterface.OnClickListener() {
     				@Override
     				public void onClick(DialogInterface dialog, int which) {
 

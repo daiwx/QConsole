@@ -170,6 +170,9 @@ public class ShellTermSession extends TermSession {
         	externalStorage = new File(Environment.getExternalStorageDirectory(), "Tubebook");
 
         }
+        if (!externalStorage.exists()) {
+        	externalStorage.mkdir();
+        }
         env[2] = "LD_LIBRARY_PATH="+filesDir+"/lib"+":"+filesDir.getParentFile()+"/files:"+filesDir.getParentFile()+"/lib";
 
         env[3] = "PYTHONHOME="+filesDir;
@@ -190,17 +193,23 @@ public class ShellTermSession extends TermSession {
         } else {
 
 	        env[5] = "PYTHONPATH="
-	        		+filesDir+"/lib/python2.7/:"
-	        		+filesDir+"/lib/python2.7/lib-dynload/:"
-	        		+filesDir+"/lib/python2.7/site-packages/:"
 	        		+externalStorage+"/lib/python2.7/site-packages/:"
+	        		+filesDir+"/lib/python2.7/site-packages/:"	        		
+	        		+filesDir+"/lib/python2.7/:"
+	        		+filesDir+"/lib/python27.zip:"
+	        		+filesDir+"/lib/python2.7/lib-dynload/:"	       
 	        		+pyPath;
 	        
+	        //env[14] = "IS_QPY2=1";
 	        env[14] = "PYTHONSTARTUP="+externalStorage+"/lib/python2.7/site-packages/qpythoninit.py";
         }
         
         env[6] = "PYTHONOPTIMIZE=2";
         env[7] = "TMPDIR="+externalStorage+"/cache";
+        File td = new File(externalStorage+"/cache");
+        if (!td.exists()) {
+        	td.mkdir();
+        }
         
         env[8] = "AP_HOST="+NStorage.getSP(this.context, "sl4a.hostname");
         env[9] = "AP_PORT="+NStorage.getSP(this.context, "sl4a.port");
