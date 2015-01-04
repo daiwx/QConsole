@@ -29,6 +29,7 @@ import com.zuowuxuxi.util.NAction;
 
 //import com.hipipal.sl4alib.PyScriptService2;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -43,6 +44,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -281,19 +283,23 @@ public class Term extends Activity implements UpdateCallback {
 
         resourceManager = new ResourceManager(this);
         
-        //String code = getCode(this);
-        boolean isQPy3 =  NAction.isQPy3(getApplicationContext());
-        File externalStorage = new File(Environment.getExternalStorageDirectory(), "com.hipipal.qpyplus");
+        String code = NAction.getCode(this);
+        if (code.startsWith("qpy")) {
+	        boolean isQPy3 =  NAction.isQPy3(getApplicationContext());
+	        File externalStorage = new File(Environment.getExternalStorageDirectory(), "com.hipipal.qpyplus");
+	
+	        if (isQPy3) {
+		        unpackData("private3", getFilesDir());
+		        unpackData("public3", new File(externalStorage+"/lib"));
+	
+	        } else {
+		        unpackData("private", getFilesDir());
+		        unpackData("public", new File(externalStorage+"/lib"));
+	        }
+        } else if (code.startsWith("lua")) {
+            unpackData("private4qe", getFilesDir());
 
-        if (isQPy3) {
-	        unpackData("private3", getFilesDir());
-	        unpackData("public3", new File(externalStorage+"/lib"));
-
-        } else {
-	        unpackData("private", getFilesDir());
-	        unpackData("public", new File(externalStorage+"/lib"));
         }
-
         Intent broadcast = new Intent(ACTION_PATH_BROADCAST);
         if (AndroidCompat.SDK >= 12) {
             broadcast.addFlags(FLAG_INCLUDE_STOPPED_PACKAGES);
@@ -408,12 +414,19 @@ public class Term extends Activity implements UpdateCallback {
             String[] mArgs = this.getIntent().getStringArrayExtra("PYTHONARGS");
 
             if (mArgs!=null) {
-                mTermSessions.add(createTermSession(mArgs));
+                mTermSessions.add(createPyTermSession(mArgs));
 
             } else {
-	            if (mTermSessions.size() == 0) {
+            	mArgs = this.getIntent().getStringArrayExtra("ARGS");
+            	if (mArgs!=null) {
 	                mTermSessions.add(createTermSession(mArgs));
-	            }
+
+            	} else {
+            	
+		            if (mTermSessions.size() == 0) {
+		                mTermSessions.add(createPyTermSession(mArgs));
+		            }
+            	}
             }
 
             for (TermSession session : mTermSessions) {
@@ -508,36 +521,66 @@ public class Term extends Activity implements UpdateCallback {
         return session;
     }
 
-    private TermSession createTermSession(String[] mArgs) {
+    @SuppressLint("NewApi")
+	private TermSession createTermSession(String[] mArgs) {
         TermSettings settings = mSettings;
         TermSession session;
+        session = createTermSession(this, settings, mArgs[0], "");
+        session.setFinishCallback(mTermService);
+        return session;
+    }
+    
+    @SuppressLint("NewApi")
+	private TermSession createPyTermSession(String[] mArgs) {
+        TermSettings settings = mSettings;
+        TermSession session;
+        String code = NAction.getCode(getApplicationContext());
         String scmd = "";
-        //String code = getCode(this);
-        boolean isQPy3 =  NAction.isQPy3(getApplicationContext());
-
-        if (isQPy3) {
-        	scmd = "python";
+        
+        if (code.startsWith("lua")) {
+	        scmd = "lua";
+	    	if (Build.VERSION.SDK_INT >= 20) { 
+	    		scmd = "lua-android5";
+	
+	    	} 
+	        if (mArgs==null) {
+	        	if (Build.VERSION.SDK_INT >= 20) { 
+	            	settings.mShell = getApplicationContext().getFilesDir()+"/bin/lua-android5";
+	        	} else {
+	            	settings.mShell = getApplicationContext().getFilesDir()+"/bin/lua";
+	        	}	
+	        	scmd = "";
+	            session = createTermSession(this, settings, scmd, "");
+	
+	        } else {
+	        	//String content = FileHelper.getFileContents(mArgs[0]);
+	        	String cmd = scmd;
+	            session = createTermSession(this, settings, cmd+" "+mArgs[0]+"", mArgs[1]);
+	            mArgs = null;
+	        }
         } else {
-        	scmd = "python";
-        }
-        if (mArgs==null) {
-        	settings.mShell = getApplicationContext().getFilesDir()+"/bin/python";
-        	scmd = "";
-            session = createTermSession(this, settings, scmd, "");
-
-        } else {
-        	String content = FileHelper.getFileContents(mArgs[0]);
-        	if (content.contains("#qpy:3\n")) {
-        		scmd = "python";
-        	} else if (content.contains("#qpy:2\n")) {
-        		scmd = "python";
-
-        	}
-        	//String cmd = settings.getInitialCommand().equals("")?scmd:settings.getInitialCommand();
-        	String cmd = scmd;
-            session = createTermSession(this, settings, cmd+" "+mArgs[0]+"", mArgs[1]);
-            mArgs = null;
-
+	        scmd = "python";
+	    	if (Build.VERSION.SDK_INT >= 20) { 
+	    		scmd = "python-android5";
+	    	} 
+	        if (mArgs==null) {
+	        	if (Build.VERSION.SDK_INT >= 20) { 
+	            	settings.mShell = getApplicationContext().getFilesDir()+"/bin/python-android5";
+	
+	        	} else {
+	            	settings.mShell = getApplicationContext().getFilesDir()+"/bin/python";
+	
+	        	}
+	        	scmd = "";
+	            session = createTermSession(this, settings, scmd, "");
+	
+	        } else {
+	        	//String content = FileHelper.getFileContents(mArgs[0]);
+	        	//String cmd = settings.getInitialCommand().equals("")?scmd:settings.getInitialCommand();
+	        	String cmd = scmd;
+	            session = createTermSession(this, settings, cmd+" "+mArgs[0]+"", mArgs[1]);
+	            mArgs = null;	
+	        }
         }
         session.setFinishCallback(mTermService);
         return session;
@@ -758,7 +801,7 @@ public class Term extends Activity implements UpdateCallback {
             return;
         }
 
-        TermSession session = createTermSession(null);
+        TermSession session = createPyTermSession(null);
         mTermSessions.add(session);
 
         TermView view = createEmulatorView(session);
@@ -1301,13 +1344,15 @@ public class Term extends Activity implements UpdateCallback {
         }
         if (resource.startsWith("private")) {
 			File bind = new File(getFilesDir()+"/bin");
-			for (File bin : bind.listFiles()) {
-				try {
-		  			Log.d(TAG, "chmod:"+bin.getAbsolutePath());
-		          
-					FileUtils.chmod(bin, 0755);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+			if (bind.listFiles()!=null) {
+				for (File bin : bind.listFiles()) {
+					try {
+			  			Log.d(TAG, "chmod:"+bin.getAbsolutePath());
+			          
+						FileUtils.chmod(bin, 0755);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			}
         }

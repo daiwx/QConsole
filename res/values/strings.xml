@@ -137,5 +137,6 @@
   <string name="pref_initialcommand_default_qpython">python</string>
   <string name="promote_ok">OK</string>
   <string name="promote_no">No</string>
+  <string name="console_name">QPython Console</string>
 
 </resources>
