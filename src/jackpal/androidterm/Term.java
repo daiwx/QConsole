@@ -296,7 +296,7 @@ public class Term extends Activity implements UpdateCallback {
 		        unpackData("private", getFilesDir());
 		        unpackData("public", new File(externalStorage+"/lib"));
 	        }
-        } else if (code.startsWith("lua")) {
+        } else if (code.startsWith("lua") || code.startsWith("texteditor")) {
             unpackData("private4qe", getFilesDir());
 
         }
